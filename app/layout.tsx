@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
-import "./globals.css";
 import { BackgroundBeams } from "@/components/ui/background-beams";
-import { Providers } from "./Provider";
-import { Open_Sans  } from 'next/font/google';
+import QueryProvider from "@/lib/QueryProvider";
+import type { Metadata } from "next";
+import { Open_Sans } from "next/font/google";
+import "./globals.css";
+import { NextThemeroviders } from "./Provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const openSansFamily = Open_Sans({
   subsets: ["latin"],
@@ -26,7 +28,14 @@ export default function RootLayout({
         className={` bg-transparent ${openSansFamily.className} antialiased`}
       >
         <BackgroundBeams />
-        <Providers>{children}</Providers>
+        <QueryProvider>
+          <NextThemeroviders>
+            <main>
+              {children}
+              <Toaster />
+            </main>
+          </NextThemeroviders>
+        </QueryProvider>
       </body>
     </html>
   );

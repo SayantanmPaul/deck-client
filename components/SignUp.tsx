@@ -1,5 +1,4 @@
 "use client";
-import { SignUpFormSchema } from "@/app/Schemas/AuthSchema";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,11 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useSignUpUser } from "@/lib/react-queries/queries";
+import { SignUpFormSchema } from "@/utils/Validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export function SignUp() {
@@ -32,14 +34,25 @@ export function SignUp() {
     resolver: zodResolver(SignUpFormSchema),
     defaultValues: {
       firstName: "",
-      lasttName: "",
+      lastName: "",
       email: "",
       password: "",
     },
   });
 
-  function onSubmitForm(values: z.infer<typeof SignUpFormSchema>) {
-    console.log(values);
+  const { mutate: SignUpUser, isPending, reset } = useSignUpUser();
+
+  function onSubmitForm(user: z.infer<typeof SignUpFormSchema>) {
+    SignUpUser(user, {
+      onSuccess(data) {
+        toast.success("Account created successfully");
+        form.reset();
+      },
+      onError(error) {
+        toast.error(error.message);
+        throw error;
+      },
+    });
   }
   return (
     <Card className=" lg:max-w-md md:max-w-md w-full bg-zinc-900 select-none">
@@ -71,7 +84,7 @@ export function SignUp() {
               />
               <FormField
                 control={form.control}
-                name="lasttName"
+                name="lastName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
@@ -134,9 +147,16 @@ export function SignUp() {
             />
             <Button
               type="submit"
+              disabled={isPending || form.formState.isDirty === false}
               className="w-full bg-indigo-500 hover:bg-indigo-600 text-primary font-bold"
             >
               Sign Up
+              {isPending && (
+                <LoaderCircleIcon
+                  strokeWidth={2.5}
+                  className="ml-2 h-4 w-4 animate-spin"
+                />
+              )}
             </Button>
           </form>
         </Form>
