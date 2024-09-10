@@ -1,10 +1,9 @@
-import { BackgroundBeams } from "@/components/ui/background-beams";
+import { Toaster } from "@/components/ui/sonner";
 import QueryProvider from "@/lib/QueryProvider";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { NextThemeroviders } from "./Provider";
-import { Toaster } from "@/components/ui/sonner";
 
 const openSansFamily = Open_Sans({
   subsets: ["latin"],
@@ -25,9 +24,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={` bg-transparent ${openSansFamily.className} antialiased`}
+        className={` ${openSansFamily.className} antialiased`}
       >
-        <BackgroundBeams />
         <QueryProvider>
           <NextThemeroviders>
             <main>
