@@ -20,12 +20,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
-import { EyeIcon } from "lucide-react";
+import { EyeIcon, LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useSignInUser } from "@/lib/react-queries/queries";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 export function SignIn() {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof LoginInFormSchema>>({
@@ -36,12 +42,25 @@ export function SignIn() {
     },
   });
 
-  function onSubmitForm(values: z.infer<typeof LoginInFormSchema>) {
-    console.log(values);
+  const { mutate: SignInUser, isPending } = useSignInUser();
+
+  function onSubmitForm(user: z.infer<typeof LoginInFormSchema>) {
+    SignInUser(user, {
+      onSuccess: (data) => {
+        toast.success(data.message);
+        router.push("/dashboard");
+      },
+      onError: (error) => {
+        const isAxiosError = error as AxiosError<{ error: string }>;
+        toast.error(isAxiosError.response?.data?.error);
+        // form.reset();
+        return null;
+      },
+    });
   }
 
   return (
-    <Card className=" lg:max-w-md md:max-w-md w-full bg-zinc-900 select-none">
+    <Card className=" lg:max-w-md md:max-w-md w-full bg-transparent select-none">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">
           Log In to your account
@@ -109,9 +128,16 @@ export function SignIn() {
             />
             <Button
               type="submit"
+              disabled={isPending || form.formState.isDirty === false}
               className="w-full bg-indigo-500 hover:bg-indigo-600 text-primary font-bold"
             >
               Log In
+              {isPending && (
+                <LoaderCircleIcon
+                  strokeWidth={2.5}
+                  className="ml-2 h-4 w-4 animate-spin"
+                />
+              )}
             </Button>
           </form>
         </Form>

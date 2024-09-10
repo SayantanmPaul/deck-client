@@ -21,6 +21,7 @@ import { useSignUpUser } from "@/lib/react-queries/queries";
 import { SignUpFormSchema } from "@/utils/Validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
+import { AxiosError } from "axios";
 import { EyeIcon, LoaderCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -40,22 +41,31 @@ export function SignUp() {
     },
   });
 
-  const { mutate: SignUpUser, isPending, reset } = useSignUpUser();
+  const { mutate: SignUpUser, isPending } = useSignUpUser();
 
   function onSubmitForm(user: z.infer<typeof SignUpFormSchema>) {
     SignUpUser(user, {
-      onSuccess(data) {
+      onSuccess() {
         toast.success("Account created successfully");
         form.reset();
       },
       onError(error) {
-        toast.error(error.message);
-        throw error;
+        const isAxiosError = error as AxiosError;
+
+        if (isAxiosError.response?.status === 409) {
+          form.setError("email", {
+            type: "manual",
+            message: "Email already exists",
+          });
+        } else {
+          toast.error(isAxiosError.message);
+        }
+        return null;
       },
     });
   }
   return (
-    <Card className=" lg:max-w-md md:max-w-md w-full bg-zinc-900 select-none">
+    <Card className=" lg:max-w-md md:max-w-md w-full h-auto bg-transparent select-none">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
         <CardDescription className="text-muted-foreground">

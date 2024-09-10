@@ -3,7 +3,7 @@
 import { permanentRedirect } from "next/navigation";
 
 const Home = () => {
-  permanentRedirect("/signup");
+  permanentRedirect("/signin");
   return (
     <div className="w-full h-dvh flex flex-col gap-6 items-center justify-center p-6">
       Base route
