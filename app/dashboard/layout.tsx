@@ -1,5 +1,6 @@
 "use client";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/context/AuthStore";
 import { useSignOutUser } from "@/lib/react-queries/queries";
 import { cn } from "@/lib/utils";
 import DeckLogo from "@/public/deck.svg";
@@ -15,6 +16,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { mutate: signOut } = useSignOutUser();
+
+  const { user } = useAuthStore();
 
   const links = [
     {
@@ -82,17 +85,29 @@ export default function DashboardLayout({
           <div>
             <SidebarLink
               link={{
-                label: "Manu Arora",
+                label: `${user?.firstName} ${user?.lastName}`,
                 href: "#",
-                icon: (
-                  <div className="min-w-7 min-h-7 rounded-full bg-white"></div>
+                icon: user?.avatar ? (
+                  <Image
+                    src={user?.avatar}
+                    alt={user?.firstName}
+                    width={120}
+                    height={120}
+                    draggable={false}
+                    priority
+                    className="rounded-full w-7 h-7 object-cover"
+                  />
+                ) : (
+                  <div className="rounded-full w-7 h-7 bg-neutral-200 dark:bg-neutral-700 animate-pulse"></div>
                 ),
               }}
             />
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="rounded-xl overflow-hidden w-full m-2 ml-0">{children}</div>
+      <div className="rounded-xl overflow-hidden w-full m-2 ml-0">
+        {children}
+      </div>
     </div>
   );
 }

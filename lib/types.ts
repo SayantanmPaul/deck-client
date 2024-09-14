@@ -8,3 +8,12 @@ export interface IUser {
   email: string;
   password: string;
 }
+
+export interface CurrentUser {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar: string;
+  bio: string;
+}

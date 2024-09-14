@@ -1,7 +1,11 @@
+import {
+  signInUser,
+  signOutUser,
+  signUpUser
+} from "@/api/apiClient";
 import { useMutation } from "@tanstack/react-query";
-import { INewUser, IUser } from "../types";
-import { signInUser, signOutUser, signUpUser } from "@/api/apiClient";
 import { toast } from "sonner";
+import { INewUser, IUser } from "../types";
 
 export const useSignUpUser = () => {
   return useMutation({

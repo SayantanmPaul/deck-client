@@ -59,3 +59,14 @@ export const signOutUser = async () => {
     throw error;
   }
 };
+
+export const getCurrentUser = async () => {
+  try {
+    const response = await axiosCLient.get("/user");
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
