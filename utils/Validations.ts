@@ -8,9 +8,11 @@ export const SignUpFormSchema = z.object({
 });
 
 export const LoginInFormSchema = z.object({
-  // firstName: z.string(),
-  // lasttName: z.string(),
   email: z.string().email(),
   password: z.string().min(8),
 });
 
+
+export const AddNewFriendSchema = z.object({
+  email: z.string().email()
+})

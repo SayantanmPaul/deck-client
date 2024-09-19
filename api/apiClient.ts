@@ -20,8 +20,13 @@ axiosCLient.interceptors.response.use(
 
         console.log("refreshing token");
 
-        await axiosCLient.post("/user/refresh");
-        return axiosCLient(originalRequest);
+        try {
+          await axiosCLient.post("/user/refresh");
+          return axiosCLient(originalRequest);
+        } catch (refreshTokneError) {
+          window.location.href = "/signin";
+          return Promise.reject(refreshTokneError);
+        }
       }
 
       return Promise.reject(error);
@@ -52,7 +57,7 @@ export const signOutUser = async () => {
   try {
     const response = await axiosCLient.post("/user/logout");
     console.log(response.data);
-    
+
     return response.data;
   } catch (error) {
     console.log(error);
@@ -63,10 +68,19 @@ export const signOutUser = async () => {
 export const getCurrentUser = async () => {
   try {
     const response = await axiosCLient.get("/user");
-    console.log(response.data);
-    return response.data;
+    return response.data.user;
   } catch (error) {
     console.log(error);
     throw error;
   }
-}
+};
+
+export const addNewFriend = async (data: { email: string }) => {
+  try {
+    const response = await axiosCLient.post("/user/add-friend", data);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

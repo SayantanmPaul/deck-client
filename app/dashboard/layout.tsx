@@ -1,14 +1,26 @@
 "use client";
+import RecentConversations from "@/components/RecentConversations";
+import { AddNewFriendSidebarOptions } from "@/components/sidebar/AddNewFriendSidebarOptions";
+import FrinedRequestSidebarOptions from "@/components/sidebar/FrinedRequestSidebarOptions";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/context/AuthStore";
-import { useSignOutUser } from "@/lib/react-queries/queries";
+import {
+  useCurrentUserData,
+  useSignOutUser,
+} from "@/lib/react-queries/queries";
 import { cn } from "@/lib/utils";
 import DeckLogo from "@/public/deck.svg";
-import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconSettings,
+  IconUserBolt,
+  IconUserPlus,
+} from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { CircleFadingPlusIcon } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import { notFound } from "next/navigation";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 
 export default function DashboardLayout({
   children,
@@ -16,13 +28,29 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { mutate: signOut } = useSignOutUser();
+  const { user, setUser } = useAuthStore();
 
-  const { user } = useAuthStore();
+  const { data: currentUser, isLoading, error } = useCurrentUserData();
+
+  useLayoutEffect(() => {
+    if (currentUser) {
+      setUser({
+        ...currentUser,
+        friends: currentUser.friends,
+        incomingFriendRequests: currentUser.incomingFriendRequests,
+        sentFriendRequests: currentUser.sentFriendRequests,
+      });
+    }
+  }, []);
+
+  if (error) {
+    return notFound();
+  }
 
   const links = [
     {
       label: "conversations",
-      href: "#",
+      href: "/dashboard",
       icon: (
         <CircleFadingPlusIcon
           size={22}
@@ -31,7 +59,17 @@ export default function DashboardLayout({
       ),
     },
     {
-      label: "profile",
+      label: "add friend",
+      href: "/dashboard/addnewfriend",
+      icon: (
+        <IconUserPlus
+          size={22}
+          className="text-neutral-700 dark:text-neutral-200 flex-shrink-0"
+        />
+      ),
+    },
+    {
+      label: "friends",
       href: "#",
       icon: (
         <IconUserBolt
@@ -105,7 +143,15 @@ export default function DashboardLayout({
           </div>
         </SidebarBody>
       </Sidebar>
-      <div className="rounded-xl overflow-hidden w-full m-2 ml-0">
+      <div className="rounded-xl overflow-hidden w-full m-2 ml-0 bg-black flex">
+        <section className="lg:w-96 md:w-1/2 h-full p-6 flex flex-col bg-gray-950">
+          <RecentConversations />
+          <AddNewFriendSidebarOptions />
+          <FrinedRequestSidebarOptions
+            initialUnseenReqCount={user.incomingFriendRequests.length as number}
+            currentUserId={user._id}
+          />
+        </section>
         {children}
       </div>
     </div>

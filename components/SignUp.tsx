@@ -18,11 +18,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useSignUpUser } from "@/lib/react-queries/queries";
+import { ErrorResponse } from "@/lib/types";
 import { SignUpFormSchema } from "@/utils/Validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
 import { AxiosError } from "axios";
 import { EyeIcon, LoaderCircleIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -30,6 +32,7 @@ import { z } from "zod";
 
 export function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof SignUpFormSchema>>({
     resolver: zodResolver(SignUpFormSchema),
@@ -48,19 +51,11 @@ export function SignUp() {
       onSuccess() {
         toast.success("Account created successfully");
         form.reset();
+        router.push("/signin")
       },
       onError(error) {
-        const isAxiosError = error as AxiosError;
-
-        if (isAxiosError.response?.status === 409) {
-          form.setError("email", {
-            type: "manual",
-            message: "Email already exists",
-          });
-        } else {
-          toast.error(isAxiosError.message);
-        }
-        return null;
+        const axiosError = error as AxiosError<ErrorResponse>;
+        toast.error(axiosError.response?.data.error || "something went wrong");
       },
     });
   }
