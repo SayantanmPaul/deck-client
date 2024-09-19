@@ -1,3 +1,6 @@
+export interface ErrorResponse {
+  error: string;
+}
 export interface INewUser {
   firstName: string;
   lastName: string;
@@ -16,4 +19,7 @@ export interface CurrentUser {
   email: string;
   avatar: string;
   bio: string;
+  friends: string[];
+  incomingFriendRequests: string[];
+  sentFriendRequests: string[]
 }

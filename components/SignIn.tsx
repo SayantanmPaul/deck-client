@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/context/AuthStore";
+import { ErrorResponse } from "@/lib/types";
 
 export function SignIn() {
   const router = useRouter();
@@ -45,26 +46,15 @@ export function SignIn() {
 
   const { mutate: SignInUser, isPending } = useSignInUser();
 
-  const { setUser } = useAuthStore();
   function onSubmitForm(user: z.infer<typeof LoginInFormSchema>) {
     SignInUser(user, {
       onSuccess: (data) => {
         toast.success(data.message);
         router.push("/dashboard");
-        setUser({
-          _id: data.user._id,
-          firstName: data.user.firstName,
-          lastName: data.user.lastName,
-          avatar: data.user.avatar,
-          bio: data.user.bio,
-          email: data.user.email,
-        });
       },
       onError: (error) => {
-        const isAxiosError = error as AxiosError<{ error: string }>;
-        toast.error(isAxiosError.response?.data?.error);
-        // form.reset();
-        return null;
+        const axiosError = error as AxiosError<ErrorResponse>;
+        toast.error(axiosError.response?.data.error || "something went wrong");
       },
     });
   }

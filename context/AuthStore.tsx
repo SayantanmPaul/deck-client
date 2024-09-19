@@ -21,6 +21,9 @@ export const useAuthStore = create<AuthState>()(
         email: "",
         avatar: "",
         bio: "",
+        friends: [],
+        incomingFriendRequests: [],
+        sentFriendRequests: []
       },
       isAuthenticated: false,
       isLoading: true,
