@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
 
   const protectedRoutes = ["/signin", "/signup"];
 
-  if (!accessToken) {
+  if (!accessToken && ["/dashboard"].includes(req.nextUrl.pathname)) {
     toast.message("Please sign in again");
     return NextResponse.redirect(new URL("/signin", req.url));
   }
