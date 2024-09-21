@@ -1,8 +1,7 @@
 "use client";
-import { IconUserBolt } from "@tabler/icons-react";
+import { IconUsers } from "@tabler/icons-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
 interface FrinedRequestSidebarOptionsProps {
   currentUserId: string;
@@ -10,7 +9,7 @@ interface FrinedRequestSidebarOptionsProps {
 }
 
 const FrinedRequestSidebarOptions: FC<FrinedRequestSidebarOptionsProps> = ({
-  currentUserId,
+  // currentUserId,
   initialUnseenReqCount,
 }) => {
   const [unseenReqCount, setUnseenReqCount] = useState<number>(
@@ -21,15 +20,13 @@ const FrinedRequestSidebarOptions: FC<FrinedRequestSidebarOptionsProps> = ({
     setUnseenReqCount(initialUnseenReqCount);
   }, [initialUnseenReqCount]);
 
-  console.log(unseenReqCount);
-
   return (
     <Link
-      href={"/dashboard/friendrequest"}
+      href={"/dashboard/friends/requests"}
       className="text-neutral-300 hover:text-indigo-600 hover:bg-neutral-900 group flex items-center gap-x-3 p-2 rounded-md text-xs font-semibold"
     >
       <div className="text-white group-hover:text-indigo-600 flex w-8 h-8 shrink-0 items-center justify-center rounded-lg border text-xs font-medium bg-neutral-800">
-        <IconUserBolt className="h-4 w-4" />
+        <IconUsers className="h-4 w-4" />
       </div>
       <p className="truncate">Friend requests</p>
       {unseenReqCount > 0 && (

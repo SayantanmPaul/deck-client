@@ -7,7 +7,7 @@ const RecentConversations = () => {
         Your chats
       </p>
 
-      chat will be visible here
+      chat updateing soon
     </div>
   );
 };

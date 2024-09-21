@@ -43,6 +43,7 @@ export const signUpUser = async (data: INewUser) => {
     throw error;
   }
 };
+
 export const signInUser = async (data: IUser) => {
   try {
     const response = await axiosCLient.post("/user/signin", data);
@@ -81,6 +82,42 @@ export const addNewFriend = async (data: { email: string }) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const getIncomingFriendReqUser = async () => {
+  try {
+    const response = await axiosCLient.get("/user/friend-requests");
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const acceptFriendRequest = async (data: { senderId: string }) => {
+  try {
+    const response = await axiosCLient.post(
+      "/user/friend-requests/accept",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const ignoreFriendRequest = async (data: { senderId: string }) => {
+  try {
+    const response = await axiosCLient.post(
+      "/user/friend-requests/decline",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 };

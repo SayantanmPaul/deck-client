@@ -20,6 +20,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { IconUserPlus } from "@tabler/icons-react";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AddNewFriend = () => {
   const form = useForm<z.infer<typeof AddNewFriendSchema>>({
@@ -31,10 +32,14 @@ const AddNewFriend = () => {
 
   const { mutate: addFriend } = useAddFriend();
 
+  const queryClient = useQueryClient();
+
+
   function handleAddFriend(data: z.infer<typeof AddNewFriendSchema>) {
     addFriend(data, {
       onSuccess: () => {
         toast.success("friend request sent");
+        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       },
       onError: (error) => {
         const axiosError = error as AxiosError<ErrorResponse>;
@@ -85,7 +90,7 @@ export const AddNewFriendSidebarOptions = () => {
         Overview
       </p>
       <Link
-        href={"/dashboard/addnewfriend"}
+        href={"/dashboard/friends/add"}
         className="text-neutral-300 hover:text-indigo-600 hover:bg-neutral-900 group flex items-center gap-x-3 p-2 rounded-md text-xs font-semibold"
       >
         <div className="text-white group-hover:text-indigo-600 flex w-8 h-8 shrink-0 items-center justify-center rounded-lg border text-xs font-medium bg-neutral-800">

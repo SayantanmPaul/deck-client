@@ -12,7 +12,7 @@ export interface IUser {
   password: string;
 }
 
-export interface CurrentUser {
+export interface CurrentUserType {
   _id: string;
   firstName: string;
   lastName: string;
@@ -22,4 +22,13 @@ export interface CurrentUser {
   friends: string[];
   incomingFriendRequests: string[];
   sentFriendRequests: string[]
+}
+
+
+export interface FriendRequestType {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar: string;
 }

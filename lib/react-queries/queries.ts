@@ -1,6 +1,9 @@
 import {
+  acceptFriendRequest,
   addNewFriend,
   getCurrentUser,
+  getIncomingFriendReqUser,
+  ignoreFriendRequest,
   signInUser,
   signOutUser,
   signUpUser
@@ -52,9 +55,38 @@ export const useCurrentUserData = () => {
   return useQuery({
     queryKey: ["currentUser"],
     queryFn: async () => {
-      const userData = await getCurrentUser();
-      return userData;
+      const currentUserData = await getCurrentUser();
+      return currentUserData;
     },
-    refetchInterval: 1000,
   });
+}
+
+export const useIncomingFriendReqUsers = () => {
+  return useQuery({
+    queryKey: ["incomingFriendReqUsers"],
+    queryFn: async () => {
+      const friendReqUsers = await getIncomingFriendReqUser();
+      return friendReqUsers;
+    },
+  })
+}
+
+export const useAcceptFrindRequest = () => {
+  return useMutation({
+    mutationFn: (friendId: string ) => {
+      return acceptFriendRequest({
+        senderId: friendId,
+      });
+    }
+  })
+}
+
+export const useIgnoreFrindRequest = () => { 
+  return useMutation({
+    mutationFn: (friendId: string ) => {
+      return ignoreFriendRequest({
+        senderId: friendId,
+      });
+    }
+  })
 }

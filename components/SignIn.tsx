@@ -28,7 +28,6 @@ import { useSignInUser } from "@/lib/react-queries/queries";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useAuthStore } from "@/context/AuthStore";
 import { ErrorResponse } from "@/lib/types";
 
 export function SignIn() {
