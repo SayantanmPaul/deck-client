@@ -36,7 +36,9 @@ const RequestPage: FC = ({}) => {
   const handleAcceptFriendRequest = (userId: string) => {
     acceptFriendRequest(userId, {
       onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: ["incomingFriendReqUsers"]});
+        queryClient.invalidateQueries({
+          queryKey: ["incomingFriendReqUsers", "currentUser", "friends"],
+        });
         toast.success("Friend request accepted");
       },
       onError: (error) => {

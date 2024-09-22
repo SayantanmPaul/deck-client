@@ -1,11 +1,12 @@
 "use client";
-import RecentConversations from "@/components/RecentConversations";
 import { AddNewFriendSidebarOptions } from "@/components/sidebar/AddNewFriendSidebarOptions";
+import ConversationListSidebarOptions from "@/components/sidebar/ConversationListSidebarOptions";
 import FrinedRequestSidebarOptions from "@/components/sidebar/FriendRequestSidebarOptions";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/context/AuthStore";
 import {
   useCurrentUserData,
+  useFriendsOfUser,
   useSignOutUser,
 } from "@/lib/react-queries/queries";
 import { cn } from "@/lib/utils";
@@ -28,7 +29,15 @@ export default function DashboardLayout({
 
   const [open, setOpen] = useState(false);
 
-  const { data: currentUser, error } = useCurrentUserData();
+  const { data: currentUser, error: currentUserError } = useCurrentUserData();
+
+  const {
+    data,
+    // isLoading,
+    error: fetchFreindError,
+  } = useFriendsOfUser();
+
+  const friendsOfUser = data?.friends;
 
   const queryClient = useQueryClient();
 
@@ -37,11 +46,13 @@ export default function DashboardLayout({
       setUser(currentUser);
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     }
-  }, [currentUser, setUser]);
+  }, [currentUser, setUser, queryClient]);
 
-  if (error) {
+  if (currentUserError || fetchFreindError) {
     return notFound();
   }
+
+  console.log(friendsOfUser);
 
   const links = [
     {
@@ -105,37 +116,52 @@ export default function DashboardLayout({
               ))}
             </div>
           </div>
-          <div>
-            <SidebarLink
-              link={{
-                label: `${user?.firstName} ${user?.lastName}`,
-                href: "#",
-                icon: user?.avatar ? (
-                  <Image
-                    src={user?.avatar}
-                    alt={user?.firstName}
-                    width={120}
-                    height={120}
-                    draggable={false}
-                    priority
-                    className="rounded-full w-7 h-7 object-cover"
-                  />
-                ) : (
-                  <div className="rounded-full w-7 h-7 bg-neutral-200 dark:bg-neutral-700 animate-pulse"></div>
-                ),
-              }}
-            />
-          </div>
+          {user?.avatar ? (
+            <div className="flex space-x-5 items-center">
+              <Image
+                src={user?.avatar}
+                alt={user?.firstName}
+                width={140}
+                height={140}
+                draggable={false}
+                priority
+                className="rounded-full min-w-7 min-h-7 w-7 h-7 object-cover"
+              />
+              <span className="flex flex-col">
+                <p className="text-md font-medium font-brand text-muted-foreground select-none text-nowrap ">
+                  {user?.firstName} {user?.lastName}
+                </p>
+                <p className="text-xs font-medium font-brand text-secondary-foreground select-none ">
+                  @{user?.userName}
+                </p>
+              </span>
+            </div>
+          ) : (
+            <div className="flex space-x-2 items-center">
+              <div className="min-w-7 min-h-7 w-7 h-7 rounded-full animate-pulse bg-muted-foreground"></div>
+              <span className="flex flex-col space-y-1 w-full">
+                <div className="w-28 h-3 animate-pulse rounded bg-muted-foreground"></div>
+                <div className="w-20 h-2 animate-pulse rounded-sm bg-muted-foreground"></div>
+              </span>
+            </div>
+          )}
         </SidebarBody>
       </Sidebar>
       <div className="rounded-xl overflow-hidden w-full m-2 ml-0 bg-black flex">
-        <section className="lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex flex-col bg-gray-950">
-          <RecentConversations />
-          <AddNewFriendSidebarOptions />
-          <FrinedRequestSidebarOptions
-            initialUnseenReqCount={user?.incomingFriendRequests?.length}
-            currentUserId={user?._id}
-          />
+        <section className="lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex flex-col bg-gray-950 justify-between">
+          {friendsOfUser && friendsOfUser.length > 0 && (
+            <ConversationListSidebarOptions
+              currentUserId={user._id}
+              friends={friendsOfUser}
+            />
+          )}
+          <div className="flex flex-col">
+            <AddNewFriendSidebarOptions />
+            <FrinedRequestSidebarOptions
+              initialUnseenReqCount={user?.incomingFriendRequests?.length}
+              currentUserId={user?._id}
+            />
+          </div>
         </section>
         {children}
       </div>

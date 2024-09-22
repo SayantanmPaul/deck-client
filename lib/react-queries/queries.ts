@@ -1,17 +1,17 @@
 import {
   acceptFriendRequest,
   addNewFriend,
+  getAllFriendsOfUser,
   getCurrentUser,
   getIncomingFriendReqUser,
   ignoreFriendRequest,
   signInUser,
   signOutUser,
-  signUpUser
+  signUpUser,
 } from "@/api/apiClient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { INewUser, IUser } from "../types";
-
 
 export const useSignUpUser = () => {
   return useMutation({
@@ -39,7 +39,7 @@ export const useSignOutUser = () => {
     onError: (error) => {
       console.log("error", error);
       toast.error(error.message);
-    }
+    },
   });
 };
 
@@ -47,9 +47,9 @@ export const useAddFriend = () => {
   return useMutation({
     mutationFn: (data: { email: string }) => {
       return addNewFriend(data);
-    }
+    },
   });
-}
+};
 
 export const useCurrentUserData = () => {
   return useQuery({
@@ -59,7 +59,7 @@ export const useCurrentUserData = () => {
       return currentUserData;
     },
   });
-}
+};
 
 export const useIncomingFriendReqUsers = () => {
   return useQuery({
@@ -68,25 +68,35 @@ export const useIncomingFriendReqUsers = () => {
       const friendReqUsers = await getIncomingFriendReqUser();
       return friendReqUsers;
     },
-  })
-}
+  });
+};
 
 export const useAcceptFrindRequest = () => {
   return useMutation({
-    mutationFn: (friendId: string ) => {
+    mutationFn: (friendId: string) => {
       return acceptFriendRequest({
         senderId: friendId,
       });
-    }
-  })
-}
+    },
+  });
+};
 
-export const useIgnoreFrindRequest = () => { 
+export const useIgnoreFrindRequest = () => {
   return useMutation({
-    mutationFn: (friendId: string ) => {
+    mutationFn: (friendId: string) => {
       return ignoreFriendRequest({
         senderId: friendId,
       });
-    }
-  })
-}
+    },
+  });
+};
+
+export const useFriendsOfUser = () => {
+  return useQuery({
+    queryKey: ["friends"],
+    queryFn: async () => {
+      const allFriends = getAllFriendsOfUser();
+      return allFriends;
+    },
+  });
+};

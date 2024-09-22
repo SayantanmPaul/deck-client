@@ -19,11 +19,11 @@ export interface CurrentUserType {
   email: string;
   avatar: string;
   bio: string;
+  userName: string;
   friends: string[];
   incomingFriendRequests: string[];
-  sentFriendRequests: string[]
+  sentFriendRequests: string[];
 }
-
 
 export interface FriendRequestType {
   _id: string;
@@ -31,4 +31,19 @@ export interface FriendRequestType {
   lastName: string;
   email: string;
   avatar: string;
+  senderId?: string;
+  receiverId?: string;
+}
+
+export interface ConversationType {
+  _id: string;
+  messages: MessageType[];
+}
+
+export interface MessageType {
+  _id: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
+  timeStamp: string;
 }

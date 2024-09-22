@@ -121,3 +121,13 @@ export const ignoreFriendRequest = async (data: { senderId: string }) => {
     throw error;
   }
 };
+
+export const getAllFriendsOfUser = async () => {
+  try {
+    const response = await axiosCLient.get("/user/friends");
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
