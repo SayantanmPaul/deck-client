@@ -30,45 +30,47 @@ const ConversationListSidebarOptions: FC<
   //   }
   // }, [pathname]);
 
-  console.log(pathname);
-
   return (
-    <ul role="list" className="min-h-[25rem] overflow-y-auto -mx-2 space-y-6">
-      <p className="text-xs font-secoundary font-semibold text-neutral-400">Recent conversations</p>
-      {friends.sort().map((friend) => {
-        const unseenMessageCount = unseenMessages.filter((unseenMessage) => {
-          return unseenMessage.senderId === friend._id;
-        }).length;
+    <div className="flex flex-col space-y-6">
+      <p className="text-xs font-secoundary font-semibold text-neutral-400">
+        Recent conversations
+      </p>
+      <ul role="list" className="min-h-[25rem] overflow-y-auto -mx-2 space-y-2">
+        {friends.sort().map((friend) => {
+          const unseenMessageCount = unseenMessages.filter((unseenMessage) => {
+            return unseenMessage.senderId === friend._id;
+          }).length;
 
-        return (
-          <li key={friend._id}>
-            <Link
-              href={`/dashboard/conversation/${chatHrefConstructor(
-                currentUserId,
-                friend._id
-              )}`}
-              className="text-slate-100 hover:text-indigo-600 hover:bg-neutral-900 group flex items-center gap-x-3 p-2 rounded-md text-sm font-semibold"
-            >
-              <Image
-                src={friend.avatar}
-                alt={friend._id}
-                width={40}
-                height={40}
-                className="w-8 h-8 rounded-full object-cover"
-              />
-              <span className="flex items-center justify-between w-full">
-                {friend.firstName} {friend.lastName}
-                {unseenMessageCount > 0 && (
-                  <span className="text-xs font-bold bg-indigo-600 rounded-full text-white w-5 h-5 flex items-center justify-center mr-2">
-                    {unseenMessageCount}
-                  </span>
-                )}
-              </span>
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+          return (
+            <li key={friend._id}>
+              <Link
+                href={`/dashboard/conversation/${chatHrefConstructor(
+                  currentUserId,
+                  friend._id
+                )}`}
+                className="text-slate-100 hover:text-indigo-600 hover:bg-neutral-900 group flex items-center gap-x-3 p-2 rounded-md text-sm font-semibold"
+              >
+                <Image
+                  src={friend.avatar}
+                  alt={friend._id}
+                  width={40}
+                  height={40}
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+                <span className="flex items-center justify-between w-full">
+                  {friend.firstName} {friend.lastName}
+                  {unseenMessageCount > 0 && (
+                    <span className="text-xs font-bold bg-indigo-600 rounded-full text-white w-5 h-5 flex items-center justify-center mr-2">
+                      {unseenMessageCount}
+                    </span>
+                  )}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 

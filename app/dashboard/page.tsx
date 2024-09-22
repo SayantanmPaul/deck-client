@@ -10,7 +10,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <main className="w-full h-dvh bg-black ">
+    <main className="w-full h-dvh">
       <section className="lg:w-96 md:w-1/2 h-auto p-4 flex flex-col justify-between">
         <button
           className="hover:underline text-sm text-rose-500"

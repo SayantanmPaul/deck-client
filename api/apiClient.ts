@@ -131,3 +131,16 @@ export const getAllFriendsOfUser = async () => {
     throw error;
   }
 };
+
+
+export const getConversationPartner = async ({ conversationPartnerId }: { conversationPartnerId: string }) => {
+  try {
+    const response = await axiosCLient.get(
+      `/user/conversation/partnerDetails?conversationPartnerId=${conversationPartnerId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

@@ -52,8 +52,6 @@ export default function DashboardLayout({
     return notFound();
   }
 
-  console.log(friendsOfUser);
-
   const links = [
     {
       label: "conversations",
@@ -147,8 +145,14 @@ export default function DashboardLayout({
           )}
         </SidebarBody>
       </Sidebar>
-      <div className="rounded-xl overflow-hidden w-full m-2 ml-0 bg-black flex">
-        <section className="lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex flex-col bg-gray-950 justify-between">
+      <div className="rounded-xl overflow-hidden w-full m-2 ml-0 bg-neutral-900 flex border border-neutral-600">
+        <section
+          className={`lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex flex-col bg-neutral-950 ${
+            !friendsOfUser || friendsOfUser.length === 0
+              ? "justify-end"
+              : "justify-between"
+          }`}
+        >
           {friendsOfUser && friendsOfUser.length > 0 && (
             <ConversationListSidebarOptions
               currentUserId={user._id}

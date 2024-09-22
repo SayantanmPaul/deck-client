@@ -2,6 +2,7 @@ import {
   acceptFriendRequest,
   addNewFriend,
   getAllFriendsOfUser,
+  getConversationPartner,
   getCurrentUser,
   getIncomingFriendReqUser,
   ignoreFriendRequest,
@@ -98,5 +99,18 @@ export const useFriendsOfUser = () => {
       const allFriends = getAllFriendsOfUser();
       return allFriends;
     },
+  });
+};
+
+export const useConversationPartnerDetails = (partnerId: string) => {
+  return useQuery({
+    queryKey: ["conversationPartnerDetails", partnerId],
+    queryFn: async () => {
+      const conversationPartnerDetails = getConversationPartner({
+        conversationPartnerId: partnerId,
+      });
+      return conversationPartnerDetails;
+    },
+    enabled: !!partnerId,
   });
 };
