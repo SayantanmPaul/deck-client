@@ -1,7 +1,13 @@
 "use client";
 
+import ConversationInput from "@/components/ConversationInput";
+import Messages from "@/components/Messages";
 import { useAuthStore } from "@/context/AuthStore";
-import { useConversationPartnerDetails } from "@/lib/react-queries/queries";
+import {
+  useConversationPartnerDetails,
+  useGetChatMessages,
+} from "@/lib/react-queries/queries";
+import { ConversationPartnerType } from "@/lib/types";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { FC } from "react";
@@ -13,51 +19,48 @@ interface ConversationPageProps {
   };
 }
 
-// async function getConversationMessages(conversationId: string) {
-//   try {
-//     const result: string[] = [];
-
-//   } catch (error) {
-//     notFound();
-//   }
-// }
-
 const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
   const { conversationId } = params;
-  
+
   const { user } = useAuthStore();
-  
+
+  const { data: chats } = useGetChatMessages(conversationId);
+
   const [userId_1, userId_2] = conversationId.split("--");
-  
+
   const conversationPartnerId = user._id === userId_1 ? userId_2 : userId_1;
-  
-  const {
-    data,
-    isLoading,
-    error,
-  } = useConversationPartnerDetails(conversationPartnerId as string);
-  
-  // 
-  
-  const partnerDetails = data?.conversationPartner;
-  
-  if (user._id !== userId_1 && user._id !== userId_2 || error) {
+
+  const { data: partnerData, error } = useConversationPartnerDetails(
+    conversationPartnerId as string
+  );
+
+  //
+
+  const partnerDetails: ConversationPartnerType =
+    partnerData?.conversationPartner;
+
+  if ((user._id !== userId_1 && user._id !== userId_2) || error) {
     return notFound();
   }
 
   return (
-    <div className="flex flex-col flex-1 h-full max-h-[calc(100vh-6rem)] justify-between ">
+    <div className="flex flex-col flex-1 h-full max-h-[calc(100vh)] justify-between ">
       <div className="flex sm:items-center justify-between py-3 border-b-2 border-neutral-800 px-4 sm:px-6 ">
         <div className="relative flex items-center space-x-4">
           <div className="relative">
             <div className="relative w-6 sm:w-10 h-6 sm:h-10">
-              <Image
-                fill
-                referrerPolicy="no-referrer"
-                className="rounded-full"
-                src={partnerDetails?.avatar || ""}
-                alt={partnerDetails?._id}
-              />
+              {partnerDetails?.avatar ? (
+                <Image
+                  fill
+                  draggable={false}
+                  referrerPolicy="no-referrer"
+                  className="rounded-full"
+                  src={partnerDetails.avatar}
+                  alt={partnerDetails._id}
+                />
+              ) : (
+                <div className="w-6 sm:w-10 h-6 sm:h-10 rounded-full bg-neutral-800 animate-pulse"></div>
+              )}
             </div>
           </div>
           <div className="flex flex-col leading-tight select-none">
@@ -71,6 +74,19 @@ const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
             </span>
           </div>
         </div>
+      </div>
+      {chats?.messages && (
+        <Messages
+          initialMessages={chats.messages}
+          currentUserId={user._id}
+          partner={partnerDetails}
+        />
+      )}
+      <div className="bg-neutral-800 border-t border-neutral-700">
+        <ConversationInput
+          conversationId={conversationId}
+          chatParner={partnerDetails}
+        />
       </div>
     </div>
   );

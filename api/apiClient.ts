@@ -132,8 +132,11 @@ export const getAllFriendsOfUser = async () => {
   }
 };
 
-
-export const getConversationPartner = async ({ conversationPartnerId }: { conversationPartnerId: string }) => {
+export const getConversationPartner = async ({
+  conversationPartnerId,
+}: {
+  conversationPartnerId: string;
+}) => {
   try {
     const response = await axiosCLient.get(
       `/user/conversation/partnerDetails?conversationPartnerId=${conversationPartnerId}`
@@ -144,3 +147,28 @@ export const getConversationPartner = async ({ conversationPartnerId }: { conver
     throw error;
   }
 };
+
+export const sendMessage = async (data: {
+  conversationId: string;
+  textMessage: string;
+}) => {
+  try {
+    const response = await axiosCLient.post("/user/conversation/send", data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getChatMessages= async (conversationId: string) => {
+  try {
+    const response = await axiosCLient.get(
+      `/user/conversation/messages?conversationId=${conversationId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

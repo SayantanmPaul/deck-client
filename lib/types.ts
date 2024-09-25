@@ -47,3 +47,12 @@ export interface MessageType {
   text: string;
   timeStamp: string;
 }
+
+export interface ConversationPartnerType {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar: string;
+  userName: string;
+}

@@ -2,10 +2,12 @@ import {
   acceptFriendRequest,
   addNewFriend,
   getAllFriendsOfUser,
+  getChatMessages,
   getConversationPartner,
   getCurrentUser,
   getIncomingFriendReqUser,
   ignoreFriendRequest,
+  sendMessage,
   signInUser,
   signOutUser,
   signUpUser,
@@ -114,3 +116,25 @@ export const useConversationPartnerDetails = (partnerId: string) => {
     enabled: !!partnerId,
   });
 };
+
+
+export const useSendMessage = () => {
+  return useMutation({
+    mutationFn: (data: { conversationId: string; text: string }) => {
+      return sendMessage({
+        conversationId: data.conversationId,
+        textMessage: data.text,
+      });
+    },
+  });
+}
+
+export const useGetChatMessages = (conversationId: string) => {
+  return useQuery({
+    queryKey: ["chatMessages", conversationId],
+    queryFn: async () => {
+      const chatMessages = getChatMessages(conversationId);
+      return chatMessages;
+    },
+  });
+}
