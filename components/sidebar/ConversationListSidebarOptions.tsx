@@ -5,7 +5,7 @@ import { chatHrefConstructor } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 
 interface ConversationListSidebarOptionsProps {
   currentUserId: string;
@@ -51,6 +51,7 @@ const ConversationListSidebarOptions: FC<
                 className="text-slate-100 hover:text-indigo-600 hover:bg-neutral-900 group flex items-center gap-x-3 p-2 rounded-md text-sm font-semibold"
               >
                 <Image
+                  draggable={false}
                   src={friend.avatar}
                   alt={friend._id}
                   width={40}

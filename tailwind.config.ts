@@ -1,8 +1,7 @@
 import type { Config } from "tailwindcss";
-const flattenColorPalette =
-  require("tailwindcss/lib/util/flattenColorPalette") as any;
+import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 
-const config = {
+const config: Config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -80,14 +79,24 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), addVariablesForColors],
-} satisfies Config;
+  plugins: [
+    require("tailwindcss-animate"),
+    require("tailwind-scrollbar"),
+    addVariablesForColors,
+  ],
+};
 
 export default config;
 
-function addVariablesForColors({ addBase, theme }: any) {
-  let allColors = flattenColorPalette(theme("colors"));
-  let newVars = Object.fromEntries(
+function addVariablesForColors({
+  addBase,
+  theme,
+}: {
+  addBase: (css: Record<string, Record<string, string>>) => void;
+  theme: Config["colors"];
+}) {
+  const allColors = flattenColorPalette(theme("colors"));
+  const newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
 

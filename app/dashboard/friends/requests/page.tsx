@@ -29,10 +29,6 @@ const RequestPage: FC = ({}) => {
 
   const queryClient = useQueryClient();
 
-  if (friendReqUsers.length <= 0 && !isLoading) {
-    return <NoFriendRequest />;
-  }
-
   const handleAcceptFriendRequest = (userId: string) => {
     acceptFriendRequest(userId, {
       onSuccess: () => {
@@ -61,6 +57,30 @@ const RequestPage: FC = ({}) => {
     });
   };
 
+  const NoFriendRequest = () => {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+        <Image
+          src={NoContentAvaibale}
+          alt="no_content"
+          draggable={false}
+          width={600}
+          height={600}
+          className="w-56 h-56 object-fill"
+        />
+        <h2 className="text-xl font-medium font-brand text-muted-foreground select-none">
+          No Friend Requests received yet
+        </h2>
+        <Link href={"/dashboard/friends/add"}>
+          <Button className="font-semibold text-sm">Add Friend</Button>
+        </Link>
+      </div>
+    );
+  };
+
+  if (friendReqUsers.length <= 0 && !isLoading) {
+    return <NoFriendRequest />;
+  }
   return (
     <div className="min-h-screen max-w-screen-xl p-4 sm:p-8 w-full ">
       <h2 className="text-3xl font-bold mb-6">Active Friend Requests</h2>
@@ -89,24 +109,3 @@ const RequestPage: FC = ({}) => {
 };
 
 export default RequestPage;
-
-export const NoFriendRequest = () => {
-  return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-      <Image
-        src={NoContentAvaibale}
-        alt="no_content"
-        draggable={false}
-        width={600}
-        height={600}
-        className="w-56 h-56 object-fill"
-      />
-      <h2 className="text-xl font-medium font-brand text-muted-foreground select-none">
-        No Friend Requests received yet
-      </h2>
-      <Link href={"/dashboard/friends/add"}>
-        <Button className="font-semibold text-sm">Add Friend</Button>
-      </Link>
-    </div>
-  );
-};
