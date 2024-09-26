@@ -1,24 +1,42 @@
 "use client";
+import { useAuthStore } from "@/context/AuthStore";
+import { pusherClient } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utils";
 import { IconUsers } from "@tabler/icons-react";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
 
-interface FrinedRequestSidebarOptionsProps {
-  currentUserId: string;
-  initialUnseenReqCount: number;
-}
+interface FriendRequestSidebarOptionsProps {}
 
-const FrinedRequestSidebarOptions: FC<FrinedRequestSidebarOptionsProps> = ({
-  // currentUserId,
-  initialUnseenReqCount,
-}) => {
-  const [unseenReqCount, setUnseenReqCount] = useState<number>(
-    initialUnseenReqCount
-  );
+const FriendRequestSidebarOptions: FC<
+  FriendRequestSidebarOptionsProps
+> = () => {
+  const [unseenReqCount, setUnseenReqCount] = useState<number>(0);
+  const { user } = useAuthStore();
 
   useEffect(() => {
-    setUnseenReqCount(initialUnseenReqCount);
-  }, [initialUnseenReqCount]);
+    if (user.incomingFriendRequests) {
+      setUnseenReqCount(user.incomingFriendRequests.length);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user?._id) return;
+
+    const channel = toPusherKey(`user:${user._id}:incoming_friend_requests`);
+    pusherClient.subscribe(channel);
+
+    const friendReqHandler = () => {
+      setUnseenReqCount((prev) => prev + 1);
+    };
+
+    pusherClient.bind("incoming_friend_requests", friendReqHandler);
+
+    return () => {
+      pusherClient.unsubscribe(channel);
+      pusherClient.unbind("incoming_friend_requests", friendReqHandler);
+    };
+  }, [user?._id]);
 
   return (
     <Link
@@ -38,4 +56,4 @@ const FrinedRequestSidebarOptions: FC<FrinedRequestSidebarOptionsProps> = ({
   );
 };
 
-export default FrinedRequestSidebarOptions;
+export default FriendRequestSidebarOptions;

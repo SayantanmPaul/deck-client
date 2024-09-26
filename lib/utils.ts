@@ -11,3 +11,7 @@ export const chatHrefConstructor =(userId_1:string, userId_2:string) =>{
   
   return `${sortedIds[0]}--${sortedIds[1]}`
 }
+
+export const toPusherKey = (key: string) => {
+  return key.replace(/:/g, '__')
+}

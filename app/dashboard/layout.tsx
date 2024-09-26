@@ -17,7 +17,7 @@ import { motion } from "framer-motion";
 import { CircleFadingPlusIcon } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function DashboardLayout({
   children,
@@ -29,7 +29,7 @@ export default function DashboardLayout({
 
   const [open, setOpen] = useState(false);
 
-  const { data: currentUser, error: currentUserError } = useCurrentUserData();
+  const { data: currentUser, error: currentUserError, isLoading } = useCurrentUserData();
 
   const {
     data,
@@ -41,7 +41,7 @@ export default function DashboardLayout({
 
   const queryClient = useQueryClient();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (currentUser) {
       setUser(currentUser);
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
@@ -147,24 +147,16 @@ export default function DashboardLayout({
       </Sidebar>
       <div className="rounded-xl overflow-hidden w-full m-2 ml-0 bg-neutral-900 flex border border-neutral-600">
         <section
-          className={`lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex flex-col bg-neutral-950 ${
-            !friendsOfUser || friendsOfUser.length === 0
-              ? "justify-end"
-              : "justify-between"
-          }`}
+          className={`lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex flex-col bg-neutral-950 justify-between `}
         >
-          {friendsOfUser && friendsOfUser.length > 0 && (
-            <ConversationListSidebarOptions
-              currentUserId={user._id}
-              friends={friendsOfUser}
-            />
-          )}
+          <ConversationListSidebarOptions
+            currentUserId={user._id}
+            friends={friendsOfUser}
+            isLoading={isLoading}
+          />
           <div className="flex flex-col">
             <AddNewFriendSidebarOptions />
-            <FrinedRequestSidebarOptions
-              initialUnseenReqCount={user?.incomingFriendRequests?.length}
-              currentUserId={user?._id}
-            />
+            <FrinedRequestSidebarOptions />
           </div>
         </section>
         {children}
