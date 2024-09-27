@@ -80,6 +80,7 @@ const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
           initialMessages={chats.messages}
           currentUserId={user._id}
           partner={partnerDetails}
+          conversationId={conversationId}
         />
       )}
       <div className="bg-neutral-800 border-t border-neutral-700">

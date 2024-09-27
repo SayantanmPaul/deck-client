@@ -1,11 +1,14 @@
 "use client";
 
+import { pusherClient } from "@/lib/pusher";
 import { FriendRequestType, MessageType } from "@/lib/types";
-import { chatHrefConstructor } from "@/lib/utils";
+import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
+import { toast } from "sonner";
+import UnseenConversationToast from "../UnseenConversationToast";
 
 interface ConversationListSidebarOptionsProps {
   currentUserId: string;
@@ -13,15 +16,73 @@ interface ConversationListSidebarOptionsProps {
   isLoading: boolean;
 }
 
+interface ExtendedMessageType extends MessageType {
+  senderAvatar: string;
+  senderFirstName: string;
+  senderLastName: string;
+  senderUserName: string;
+}
 const ConversationListSidebarOptions: FC<
   ConversationListSidebarOptionsProps
 > = ({ currentUserId, friends, isLoading }) => {
+  const router = useRouter();
   const pathname = usePathname();
 
   const [unseenMessages, setUnseenMessages] = useState<MessageType[]>([]);
 
   useEffect(() => {
-    if (pathname?.includes("conversations")) {
+    if (!currentUserId) return;
+
+    const ConversationChannel = toPusherKey(
+      `user:${currentUserId}:conversations`
+    );
+    const FriendChannel = toPusherKey(`user:${currentUserId}:friends`);
+
+    pusherClient.subscribe(ConversationChannel);
+    pusherClient.subscribe(FriendChannel);
+
+    const handleNewConversation = (message: ExtendedMessageType) => {
+      const conversationUrl = `/dashboard/conversation/${chatHrefConstructor(
+        currentUserId,
+        message.senderId
+      )}`;
+
+      const shoudlNotify = pathname !== conversationUrl;
+      if (message.senderId === currentUserId || !shoudlNotify) return;
+
+      toast.custom(() => (
+        <UnseenConversationToast
+          currentUserId={currentUserId}
+          senderAvatar={message.senderAvatar}
+          senderFirstName={message.senderFirstName}
+          senderId={message.senderId}
+          senderMessage={message.text}
+        />
+      ));
+
+      setUnseenMessages((prev) => [...prev, message]);
+    };
+
+    const handleFriendsUpdate = () => {
+      router.refresh();
+    };
+
+    pusherClient.bind("new_message", handleNewConversation);
+    pusherClient.bind("new_friend", handleFriendsUpdate);
+
+    console.log("pusher subscribed");
+
+    return () => {
+      pusherClient.unsubscribe(ConversationChannel);
+      pusherClient.unsubscribe(FriendChannel);
+
+      pusherClient.unbind("new_message", handleNewConversation);
+      pusherClient.unbind("new_friend", handleFriendsUpdate);
+    };
+  }, [currentUserId, pathname, router]);
+
+  useEffect(() => {
+    if (pathname?.includes("conversation")) {
       setUnseenMessages((prev) => {
         return prev.filter((message) => {
           return !pathname.includes(message.senderId);
@@ -49,7 +110,7 @@ const ConversationListSidebarOptions: FC<
           friends?.sort().map((friend) => {
             const unseenMessageCount = unseenMessages.filter(
               (unseenMessage) => {
-                return unseenMessage.senderId === friend._id;
+                return unseenMessage?.senderId === friend._id;
               }
             ).length;
 

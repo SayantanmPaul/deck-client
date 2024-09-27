@@ -1,24 +1,44 @@
 "use client";
-import { cn } from "@/lib/utils";
+import { cn, toPusherKey } from "@/lib/utils";
 import { Message } from "@/lib/validations";
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import moment from "moment";
 import Image from "next/image";
 import { useAuthStore } from "@/context/AuthStore";
 import { ConversationPartnerType } from "@/lib/types";
+import { pusherClient } from "@/lib/pusher";
 
 interface MessagesProps {
   initialMessages: Message[];
   currentUserId: string;
   partner: ConversationPartnerType;
+  conversationId: string;
 }
 
-const Messages: FC<MessagesProps> = ({ initialMessages, currentUserId, partner }) => {
-  const [messages] = useState<Message[]>(initialMessages);
+const Messages: FC<MessagesProps> = ({ initialMessages, currentUserId, partner, conversationId }) => {
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
 
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
 
   const { user } = useAuthStore();
+
+  useEffect(() => {
+    const channel = toPusherKey(
+      `conversation:${conversationId}`
+    );
+    pusherClient.subscribe(channel);
+
+    const messageHandler = (message: Message) => {
+      setMessages((prev)=>[message, ...prev])
+    };
+
+    pusherClient.bind('incoming_message', messageHandler)
+
+    return () => {
+      pusherClient.unsubscribe(channel);
+      pusherClient.unbind('incoming_message', messageHandler);
+    }
+  }, [])
 
   return (
     <div
@@ -39,7 +59,7 @@ const Messages: FC<MessagesProps> = ({ initialMessages, currentUserId, partner }
             >
               <div
                 className={cn(
-                  "flex flex-col space-y-2 text-base max-w-xs mx-1",
+                  "flex flex-col space-y-2 text-base max-w-96 mx-1",
                   {
                     "order-1 items-end": isCurrentUser,
                     "order-2 items-start": !isCurrentUser,
