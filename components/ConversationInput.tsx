@@ -32,7 +32,7 @@ const ConversationInput: FC<ConversationInputProps> = ({
       { conversationId: conversationId, text: input },
       {
         onSuccess: () => {
-          setInput(""); 
+          setInput("");
           textareaRef.current?.focus();
         },
         onError: (error) => {
@@ -48,8 +48,8 @@ const ConversationInput: FC<ConversationInputProps> = ({
   };
 
   return (
-    <div className=" p-4 mb-2 sm:mb-0 flex w-full gap-3 items-end ">
-      <div className="relative bg-neutral-700 overflow-hidden rounded-3xl shadow-sm ring-1 ring-inset ring-neutral-500 w-full flex items-center px-2 pl-4">
+    <div className=" p-4 mb-2 sm:mb-0 flex w-full gap-3 items-end">
+      <div className="relative bg-neutral-700 rounded-3xl shadow-sm ring-1 ring-inset ring-neutral-500 w-full flex items-center px-2 pl-4 lg:max-w-full md:max-w-full max-w-72">
         <TextAreaAutoSize
           ref={textareaRef}
           onKeyDown={(e) => {
@@ -62,8 +62,10 @@ const ConversationInput: FC<ConversationInputProps> = ({
           maxRows={8}
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={`start conversation with ${chatParner?.firstName}...`}
-          className="block w-full flex-1 resize-none border-none bg-transparent text-neutral-50 placeholder:text-neutral-400 py-1.5 sm:text-sm sm:leading-6 font-medium outline-none no-scrollbar"
+          placeholder={`start conversation with ${
+            chatParner ? chatParner.firstName : "user"
+          }...`}
+          className="block w-full flex-1 resize-none border-none bg-transparent text-neutral-50 placeholder:text-neutral-400 text-sm py-2 sm:leading-6 font-medium outline-none no-scrollbar"
         />
       </div>
       <span className="flex items-center gap-3">
@@ -71,7 +73,7 @@ const ConversationInput: FC<ConversationInputProps> = ({
         <div className="flex-shrin-0">
           <Button
             disabled={!input.trim()}
-            className="w-min rounded-full "
+            className="w-min rounded-full"
             onClick={handleSendMessage}
             type="submit"
           >

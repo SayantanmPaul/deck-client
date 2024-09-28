@@ -23,20 +23,35 @@ const FriendRequestSidebarOptions: FC<
   useEffect(() => {
     if (!user?._id) return;
 
-    const channel = toPusherKey(`user:${user._id}:incoming_friend_requests`);
-    pusherClient.subscribe(channel);
+    pusherClient.subscribe(
+      toPusherKey(`user:${user._id}:incoming_friend_requests`)
+    );
+
+    pusherClient.subscribe(toPusherKey(`user:${user._id}:friends`));
 
     const friendReqHandler = () => {
       setUnseenReqCount((prev) => prev + 1);
     };
 
+    const friendReqUpdateHandler = () => {
+      setUnseenReqCount((prev) => prev - 1);
+    };
+
+    //handle accept and decline friend request by pusher subscription
     pusherClient.bind("incoming_friend_requests", friendReqHandler);
+    pusherClient.bind("new_friend", friendReqUpdateHandler);
+    pusherClient.bind("friend_decline", friendReqUpdateHandler);
 
     return () => {
-      pusherClient.unsubscribe(channel);
-      pusherClient.unbind("incoming_friend_requests", friendReqHandler);
+      pusherClient.unsubscribe(
+        toPusherKey(`user:${user._id}:incoming_friend_requests`)
+      );
+      pusherClient.unsubscribe(toPusherKey(`user:${user._id}:friends`));
+      pusherClient.unbind("incoming_friend_requests", friendReqUpdateHandler);
+      pusherClient.unbind("new_friend", friendReqUpdateHandler);
+      pusherClient.unbind("friend_decline", friendReqUpdateHandler);
     };
-  }, [user?._id]);
+  }, [user._id]);
 
   return (
     <Link

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
+import { IconBackspace } from "@tabler/icons-react";
 
 interface UnseenConversationToastProps {
   currentUserId: string;
@@ -23,7 +23,7 @@ const UnseenConversationToast: FC<UnseenConversationToastProps> = ({
   return (
     <div
       className={cn(
-        "w-full min-w-80 max-w-xl shadow-lg pointer-events-auto flex flex-1 p-4 space-x-4",
+        "w-full min-w-80 max-w-xl shadow-lg pointer-events-auto flex items-end flex-1 p-4 space-x-4",
         {
           "animate-enter": true,
         }
@@ -53,14 +53,13 @@ const UnseenConversationToast: FC<UnseenConversationToastProps> = ({
           </div>
         </div>
       </Link>
-      <Button
+      <button
         type="button"
-        variant="link"
         onClick={() => toast.dismiss()}
-        className="w-min text-muted-foreground py-0 px-0"
+        className="w-min text-muted-foreground p-1"
       >
-        dismiss
-      </Button>
+        <IconBackspace />
+      </button>
     </div>
   );
 };

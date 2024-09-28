@@ -22,10 +22,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { pusherClient } from "@/lib/pusher";
 import { useAuthStore } from "@/context/AuthStore";
 import { toPusherKey } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const RequestPage: FC = ({}) => {
   const { data, isLoading } = useIncomingFriendReqUsers();
   const { user } = useAuthStore();
+  const router = useRouter();
 
   const [realtimeFriendReq, setRealtimeFriendReq] = useState<
     FriendRequestType[]
@@ -42,6 +44,7 @@ const RequestPage: FC = ({}) => {
     }
   }, [data]);
 
+  //realtime friend request update with pusher subscription
   useEffect(() => {
     const channel = toPusherKey(`user:${user._id}:incoming_friend_requests`);
 
@@ -58,12 +61,18 @@ const RequestPage: FC = ({}) => {
     };
   }, [user._id]);
 
+
+  //accept and decline friend request handler fn
   const handleAcceptFriendRequest = (userId: string) => {
     acceptFriendRequest(userId, {
       onSuccess: () => {
+        setRealtimeFriendReq((prev) =>
+          prev.filter((request) => request._id !== userId)
+        );
         queryClient.invalidateQueries({
           queryKey: ["incomingFriendReqUsers", "currentUser"],
         });
+        router.refresh();
         toast.success("Friend request accepted");
       },
       onError: (error) => {
@@ -76,7 +85,11 @@ const RequestPage: FC = ({}) => {
   const handleDeclineFriendRequest = (userId: string) => {
     ignoreFriendRequest(userId, {
       onSuccess: () => {
+        setRealtimeFriendReq((prev) =>
+          prev.filter((request) => request._id !== userId)
+        );
         queryClient.invalidateQueries({ queryKey: ["incomingFriendReqUsers", "currentUser"] });
+        router.refresh();
         toast.success("Friend request removed");
       },
       onError: (error) => {
@@ -88,7 +101,7 @@ const RequestPage: FC = ({}) => {
 
   const NoFriendRequest = () => {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center gap-4">
+      <div className="w-full h-full min-h-[calc(100vh)] flex flex-col items-center justify-center gap-4">
         <Image
           src={NoContentAvaibale}
           alt="no_content"
@@ -112,8 +125,8 @@ const RequestPage: FC = ({}) => {
   }
 
   return (
-    <div className="min-h-screen max-w-screen-xl p-4 sm:p-8 w-full ">
-      <h2 className="text-3xl font-bold mb-6">Active Friend Requests</h2>
+    <div className="min-h-screen max-w-screen-xl p-5 w-full ">
+      <h2 className="lg:text-3xl text-lg font-bold mb-6">Active Friend Requests</h2>
       <ScrollArea className="h-[calc(100vh-12rem)] ">
         <div className="flex flex-wrap gap-6">
           {isLoading

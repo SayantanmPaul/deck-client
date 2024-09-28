@@ -34,8 +34,6 @@ const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
     conversationPartnerId as string
   );
 
-  //
-
   const partnerDetails: ConversationPartnerType =
     partnerData?.conversationPartner;
 
@@ -44,11 +42,12 @@ const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
   }
 
   return (
-    <div className="flex flex-col flex-1 h-full max-h-[calc(100vh)] justify-between ">
-      <div className="flex sm:items-center justify-between py-3 border-b-2 border-neutral-800 px-4 sm:px-6 ">
+    <div className="flex flex-col flex-1 h-full min-h-[calc(100vh)] lg:min-h-[calc(98vh)] justify-between ">
+      {/* Header */}
+      <div className="flex sm:items-center justify-between py-3 border-b-2 border-neutral-800 px-4 lg:px-3  ">
         <div className="relative flex items-center space-x-4">
           <div className="relative">
-            <div className="relative w-6 sm:w-10 h-6 sm:h-10">
+            <div className="relative w-10 h-10">
               {partnerDetails?.avatar ? (
                 <Image
                   fill
@@ -59,7 +58,7 @@ const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
                   alt={partnerDetails._id}
                 />
               ) : (
-                <div className="w-6 sm:w-10 h-6 sm:h-10 rounded-full bg-neutral-800 animate-pulse"></div>
+                <div className="w-10 h-10 rounded-full bg-neutral-800 animate-pulse"></div>
               )}
             </div>
           </div>
@@ -75,6 +74,8 @@ const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
           </div>
         </div>
       </div>
+
+      {/* //chat conversation and input */}
       {chats?.messages && (
         <Messages
           initialMessages={chats.messages}

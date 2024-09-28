@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 import Link, { LinkProps } from "next/link";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconMenu2, IconX } from "@tabler/icons-react";
+import { IconMenuDeep, IconX } from "@tabler/icons-react";
+import MobileViewSidebar from "../sidebar/MobileViewSidebar";
 
 interface Links {
   label: string;
@@ -89,7 +90,7 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full py-4 px-5 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0 max-w-60",
+          "h-full py-4 px-5 hidden lg:flex lg:flex-col bg-neutral-100 dark:bg-neutral-800 w-[300px] flex-shrink-0 max-w-60",
           className
         )}
         animate={{
@@ -113,17 +114,15 @@ export const MobileSidebar = ({
   const { open, setOpen } = useSidebar();
   return (
     <>
-      <div
-        className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden  items-center justify-between bg-neutral-100 dark:bg-neutral-800 w-full"
-        )}
-        {...props}
-      >
-        <div className="flex justify-end z-20 w-full">
-          <IconMenu2
-            className="text-neutral-800 dark:text-neutral-200"
-            onClick={() => setOpen(!open)}
-          />
+      <div {...props} className="block lg:hidden">
+        <div className="absolute top-6 right-5 z-20 w-full">
+          <div className="flex justify-end gap-4">
+            <MobileViewSidebar />
+            <IconMenuDeep
+              className="text-neutral-800 dark:text-neutral-200"
+              onClick={() => setOpen(!open)}
+            />
+          </div>
         </div>
         <AnimatePresence>
           {open && (
@@ -186,7 +185,6 @@ export const SidebarLink = ({
               : "inline-block",
             opacity: animate ? (open ? 1 : 0) : 1,
           }}
-          
           className="text-neutral-700 font-medium font-brand dark:text-neutral-200 text-md leading-4 group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
         >
           {link.label}

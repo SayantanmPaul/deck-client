@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthStore } from "@/context/AuthStore";
 import { pusherClient } from "@/lib/pusher";
 import { FriendRequestType, MessageType } from "@/lib/types";
 import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
@@ -22,14 +23,22 @@ interface ExtendedMessageType extends MessageType {
   senderLastName: string;
   senderUserName: string;
 }
+
 const ConversationListSidebarOptions: FC<
   ConversationListSidebarOptionsProps
 > = ({ currentUserId, friends, isLoading }) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [unseenMessages, setUnseenMessages] = useState<MessageType[]>([]);
+  const { unseenMessages, addUnseenMessage, removeMessages } = useAuthStore();
+  const [activeConversations, setActiveConversations] =
+    useState<FriendRequestType[]>([]);
+  
+  useEffect(() => {
+    setActiveConversations(friends);
+  },[friends])
 
+  //subscribe to the conversation and newfriend update channels
   useEffect(() => {
     if (!currentUserId) return;
 
@@ -47,6 +56,7 @@ const ConversationListSidebarOptions: FC<
         message.senderId
       )}`;
 
+      // toast notifications for the unseen new messages: custom
       const shoudlNotify = pathname !== conversationUrl;
       if (message.senderId === currentUserId || !shoudlNotify) return;
 
@@ -59,18 +69,16 @@ const ConversationListSidebarOptions: FC<
           senderMessage={message.text}
         />
       ));
-
-      setUnseenMessages((prev) => [...prev, message]);
+      addUnseenMessage(message);
     };
 
-    const handleFriendsUpdate = () => {
-      router.refresh();
+    const handleFriendsUpdate = (newAddedFriend: FriendRequestType) => {
+      setActiveConversations((prev) => [...prev, newAddedFriend]);
     };
 
+    //bind the Pusher events to handle new messages and new friends
     pusherClient.bind("new_message", handleNewConversation);
     pusherClient.bind("new_friend", handleFriendsUpdate);
-
-    console.log("pusher subscribed");
 
     return () => {
       pusherClient.unsubscribe(ConversationChannel);
@@ -79,17 +87,24 @@ const ConversationListSidebarOptions: FC<
       pusherClient.unbind("new_message", handleNewConversation);
       pusherClient.unbind("new_friend", handleFriendsUpdate);
     };
-  }, [currentUserId, pathname, router]);
+  }, [currentUserId, pathname, router, addUnseenMessage, friends]);
 
+  //removal unseen messages while the user in conversation with the friend
   useEffect(() => {
     if (pathname?.includes("conversation")) {
-      setUnseenMessages((prev) => {
-        return prev.filter((message) => {
-          return !pathname.includes(message.senderId);
-        });
-      });
+      const [frindId1, friendId2] = pathname.split("--");
+      const ChatPartnerId = frindId1 === currentUserId ? friendId2 : frindId1;
+
+      //remove unseen messagescount for the chatpartner from the list
+      const removeMessageForFriend = (friendId: string) => {
+        removeMessages((message) => message.senderId === friendId);
+      };
+      if (ChatPartnerId) {
+        removeMessageForFriend(ChatPartnerId);
+      }
     }
-  }, [pathname]);
+  }, [pathname, currentUserId, removeMessages]);
+
 
   return (
     <div className="flex flex-col space-y-6">
@@ -107,11 +122,9 @@ const ConversationListSidebarOptions: FC<
             No friends yet
           </li>
         ) : (
-          friends?.sort().map((friend) => {
+          activeConversations?.sort().map((friend) => {
             const unseenMessageCount = unseenMessages.filter(
-              (unseenMessage) => {
-                return unseenMessage?.senderId === friend._id;
-              }
+              (unseenMessage) => unseenMessage?.senderId === friend._id
             ).length;
 
             return (

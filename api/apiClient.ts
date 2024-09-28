@@ -1,10 +1,14 @@
 import { INewUser, IUser } from "@/lib/types";
 import axios from "axios";
 
+const isDevMode = true;
+
+const productionUrl = "";
+
 const BASE_URL = "http://localhost:5001/api/";
 
 export const axiosCLient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: isDevMode ? BASE_URL : productionUrl,
   withCredentials: true,
 });
 
@@ -39,7 +43,6 @@ export const signUpUser = async (data: INewUser) => {
     const response = await axiosCLient.post("/user/signup", data);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -49,7 +52,6 @@ export const signInUser = async (data: IUser) => {
     const response = await axiosCLient.post("/user/signin", data);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -57,11 +59,8 @@ export const signInUser = async (data: IUser) => {
 export const signOutUser = async () => {
   try {
     const response = await axiosCLient.post("/user/logout");
-    console.log(response.data);
-
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -71,7 +70,6 @@ export const getCurrentUser = async () => {
     const response = await axiosCLient.get("/user");
     return response.data.user;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -79,7 +77,6 @@ export const getCurrentUser = async () => {
 export const addNewFriend = async (data: { email: string }) => {
   try {
     const response = await axiosCLient.post("/user/add-friend", data);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error;
@@ -91,7 +88,6 @@ export const getIncomingFriendReqUser = async () => {
     const response = await axiosCLient.get("/user/friend-requests");
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -104,7 +100,6 @@ export const acceptFriendRequest = async (data: { senderId: string }) => {
     );
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -117,7 +112,6 @@ export const ignoreFriendRequest = async (data: { senderId: string }) => {
     );
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -127,7 +121,6 @@ export const getAllFriendsOfUser = async () => {
     const response = await axiosCLient.get("/user/friends");
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -143,7 +136,6 @@ export const getConversationPartner = async ({
     );
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -156,19 +148,17 @@ export const sendMessage = async (data: {
     const response = await axiosCLient.post("/user/conversation/send", data);
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
 
-export const getChatMessages= async (conversationId: string) => {
+export const getChatMessages = async (conversationId: string) => {
   try {
     const response = await axiosCLient.get(
       `/user/conversation/messages?conversationId=${conversationId}`
     );
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
-}
+};

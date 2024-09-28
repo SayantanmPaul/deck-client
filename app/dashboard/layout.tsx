@@ -1,7 +1,7 @@
 "use client";
 import { AddNewFriendSidebarOptions } from "@/components/sidebar/AddNewFriendSidebarOptions";
 import ConversationListSidebarOptions from "@/components/sidebar/ConversationListSidebarOptions";
-import FrinedRequestSidebarOptions from "@/components/sidebar/FriendRequestSidebarOptions";
+import FriendRequestSidebarOptions from "@/components/sidebar/FriendRequestSidebarOptions";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/context/AuthStore";
 import {
@@ -29,11 +29,15 @@ export default function DashboardLayout({
 
   const [open, setOpen] = useState(false);
 
-  const { data: currentUser, error: currentUserError, isLoading } = useCurrentUserData();
+  const {
+    data: currentUser,
+    error: currentUserError,
+    isLoading: currentUserIsLoading,
+  } = useCurrentUserData();
 
   const {
     data,
-    // isLoading,
+    isLoading: friendsOfUserIsLoading,
     error: fetchFreindError,
   } = useFriendsOfUser();
 
@@ -114,8 +118,8 @@ export default function DashboardLayout({
               ))}
             </div>
           </div>
-          {user?.avatar ? (
-            <div className="flex space-x-5 items-center">
+          {user && !currentUserIsLoading ? (
+            <div className="flex space-x-7 items-center">
               <Image
                 src={user?.avatar}
                 alt={user?.firstName}
@@ -145,18 +149,20 @@ export default function DashboardLayout({
           )}
         </SidebarBody>
       </Sidebar>
-      <div className="rounded-xl overflow-hidden w-full m-2 ml-0 bg-neutral-900 flex border border-neutral-600">
+      <div className="lg:rounded-xl overflow-hidden w-full lg:m-2 ml-0 bg-neutral-900 flex lg:border border-neutral-600">
         <section
-          className={`lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex flex-col bg-neutral-950 justify-between `}
+          className={`lg:w-96 max-w-80 min-w-80 md:w-1/2 h-full p-6 flex-col bg-neutral-950 justify-between hidden md:flex ${
+            open ? "block" : "hidden"
+          }`}
         >
           <ConversationListSidebarOptions
             currentUserId={user._id}
             friends={friendsOfUser}
-            isLoading={isLoading}
+            isLoading={friendsOfUserIsLoading}
           />
           <div className="flex flex-col">
             <AddNewFriendSidebarOptions />
-            <FrinedRequestSidebarOptions />
+            <FriendRequestSidebarOptions />
           </div>
         </section>
         {children}
@@ -182,7 +188,7 @@ const Logo = () => {
         animate={{ opacity: 1 }}
         className="text-xl font-bold font-brand text-bold dark:text-white whitespace-pre"
       >
-        conversations
+        Deck
       </motion.span>
     </span>
   );
