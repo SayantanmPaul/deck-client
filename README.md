@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Deck: A real-time Communication Platform
 
-## Getting Started
+#### Demo Link: [Click here](https://deck-app.vercel.app/)
+#### Backend Server Files : [Click here](https://github.com/SayantanmPaul/deck-server)
 
-First, run the development server:
+### Getting Started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+To clone and run this application locally, follow these steps:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone the frontend repository and install dependencies:
+   ```bash
+   git clone https://github.com/SayantanmPaul/deck-frontend.git
+   cd deck-frontend
+   npm i
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Set up environment variables for the frontend as described:
+    ```
+    PUSHER_APP_ID = <your-pusher-app-id>
+    NEXT_PUBLIC_PUSHER_APP_KEY = <your-pusher-app-key>
+    PUSHER_APP_SECRET = <your-pusher-app-secret>
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+3. Clone the backend repository and install dependencies:
+   ```bash
+   git clone https://github.com/SayantanmPaul/deck-server.git
+   cd deck-server
+   npm i
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Set up environment variables for the backend as described:
+    ```
+    # Server Configuration
+    PORT = <your_port_number>                   # e.g., 5000
+    ORIGIN_PATH= http://localhost:3000          # or <your_frontend_url>
+    DB_URL= <your_mongodb_url>                  
+    JWT_SECRET= <jwt_secret>                    
+    REFRESH_TOKEN_SECRET= <refresh_token_secret>
+    
+    REDIS_URL= <upstash_redis_connection_url>
+    UPSTASH_REDIS_REST_URL= <your_redis_app_rest_url>
+    UPSTASH_REDIS_REST_TOKEN= <redis_app_token>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    PUSHER_APP_ID = <pusher_app_id>
+    PUSHER_APP_KEY= <pusher_app_public_key>
+    PUSHER_APP_SECRET= <pusher_app_secret>
+    PUSHER_APP_CLUSTER= "ap2"
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Make Sure your MogoDB service is running.
 
-## Deploy on Vercel
+6. Start both the frontend and backend servers:
+   - **Frontend:** `npm run dev`
+   - **Backend:** `npm run start:nodemon`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
