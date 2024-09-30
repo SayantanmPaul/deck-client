@@ -10,6 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
 import { toast } from "sonner";
 import UnseenConversationToast from "../UnseenConversationToast";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ConversationListSidebarOptionsProps {
   currentUserId: string;
@@ -29,14 +30,16 @@ const ConversationListSidebarOptions: FC<
 > = ({ currentUserId, friends, isLoading }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
 
   const { unseenMessages, addUnseenMessage, removeMessages } = useAuthStore();
-  const [activeConversations, setActiveConversations] =
-    useState<FriendRequestType[]>([]);
-  
+  const [activeConversations, setActiveConversations] = useState<
+    FriendRequestType[]
+  >([]);
+
   useEffect(() => {
     setActiveConversations(friends);
-  },[friends])
+  }, [friends]);
 
   //subscribe to the conversation and newfriend update channels
   useEffect(() => {
@@ -73,7 +76,13 @@ const ConversationListSidebarOptions: FC<
     };
 
     const handleFriendsUpdate = (newAddedFriend: FriendRequestType) => {
-      setActiveConversations((prev) => [...prev, newAddedFriend]);
+      queryClient.invalidateQueries({ queryKey: ["friends"] });
+      setActiveConversations((prev) => {
+        if (!Array.isArray(prev)) { 
+          return [newAddedFriend];
+        }
+        return [...prev, newAddedFriend];
+      });
     };
 
     //bind the Pusher events to handle new messages and new friends
@@ -104,7 +113,6 @@ const ConversationListSidebarOptions: FC<
       }
     }
   }, [pathname, currentUserId, removeMessages]);
-
 
   return (
     <div className="flex flex-col space-y-6">
