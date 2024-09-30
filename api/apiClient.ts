@@ -1,9 +1,9 @@
 import { INewUser, IUser } from "@/lib/types";
 import axios from "axios";
 
-const isDevMode = true;
+const isDevMode = false;
 
-const productionUrl = "";
+const productionUrl = "https://deck-server-production.up.railway.app/api/";
 
 const BASE_URL = "http://localhost:5001/api/";
 
