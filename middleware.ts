@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { toast } from "sonner";
 
 export function middleware(req: NextRequest) {
   const accessToken = req.cookies.get("accessToken")?.value;
@@ -7,7 +6,6 @@ export function middleware(req: NextRequest) {
   const protectedRoutes = ["/signin", "/signup"];
 
   if (!accessToken && ["/dashboard"].includes(req.nextUrl.pathname)) {
-    toast.message("Please sign in again");
     return NextResponse.redirect(new URL("/signin", req.url));
   }
 
