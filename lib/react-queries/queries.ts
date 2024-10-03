@@ -15,6 +15,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { INewUser, IUser } from "../types";
+import { useAuthStore } from "@/context/AuthStore";
 
 export const useSignUpUser = () => {
   return useMutation({
@@ -33,9 +34,24 @@ export const useSignInUser = () => {
 };
 
 export const useSignOutUser = () => {
+  const { setUser, setIsAuthenticated } = useAuthStore();
+
   return useMutation({
     mutationFn: () => signOutUser(),
     onSuccess: () => {
+      setUser({
+        _id: '',
+        firstName: '',
+        lastName: '',
+        email: '',
+        avatar: '',
+        bio: '',
+        userName: '',
+        friends: [],
+        incomingFriendRequests: [],
+        sentFriendRequests: [],
+      });
+      setIsAuthenticated(false);
       window.location.href = "/signin";
       toast.success("Logged out successfully");
     },

@@ -27,7 +27,7 @@ import { z } from "zod";
 import { useSignInUser } from "@/lib/react-queries/queries";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { permanentRedirect, redirect, useRouter } from "next/navigation";
 import { ErrorResponse } from "@/lib/types";
 import { useAuthStore } from "@/context/AuthStore";
 
@@ -66,7 +66,8 @@ export function SignIn() {
           });
         }
         toast.success(data.message);
-        router.push("/dashboard");
+        permanentRedirect('/dashboard')
+        // router.push("/dashboard");
       },
       onError: (error) => {
         const axiosError = error as AxiosError<ErrorResponse>;

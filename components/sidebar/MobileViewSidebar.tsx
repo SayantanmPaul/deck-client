@@ -1,12 +1,16 @@
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger
+} from "@/components/ui/sheet";
 import { useAuthStore } from "@/context/AuthStore";
 import { useFriendsOfUser } from "@/lib/react-queries/queries";
 import { IconMessage } from "@tabler/icons-react";
 import { notFound, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { AddNewFriendSidebarOptions } from "./AddNewFriendSidebarOptions";
 import ConversationListSidebarOptions from "./ConversationListSidebarOptions";
 import FriendRequestSidebarOptions from "./FriendRequestSidebarOptions";
-import { useEffect, useState } from "react";
 
 const SHEET_SIDES = ["left"] as const;
 
@@ -28,7 +32,7 @@ const MobileViewSidebar = () => {
   }
 
   return (
-    <Sheet open={isOpen}>
+    <Sheet open={isOpen} onOpenChange={() => setIsOpen(!isOpen)}>
       <SheetTrigger asChild>
         <button onClick={() => setIsOpen(!isOpen)}>
           <IconMessage />
