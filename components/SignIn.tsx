@@ -1,5 +1,4 @@
 "use client";
-import { LoginInFormSchema } from "@/utils/Validations";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,22 +17,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/context/AuthStore";
+import { useSignInUser } from "@/lib/react-queries/queries";
+import { ErrorResponse } from "@/lib/types";
+import { LoginInFormSchema } from "@/utils/Validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
+import { AxiosError } from "axios";
 import { EyeIcon, LoaderCircleIcon } from "lucide-react";
+import { permanentRedirect } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useSignInUser } from "@/lib/react-queries/queries";
 import { toast } from "sonner";
-import { AxiosError } from "axios";
-import { permanentRedirect, redirect, useRouter } from "next/navigation";
-import { ErrorResponse } from "@/lib/types";
-import { useAuthStore } from "@/context/AuthStore";
+import { z } from "zod";
 
 export function SignIn() {
-  const router = useRouter();
-
   const [showPassword, setShowPassword] = useState(false);
   const { setUser } = useAuthStore();
 
