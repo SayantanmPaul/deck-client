@@ -29,11 +29,13 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { ErrorResponse } from "@/lib/types";
+import { useAuthStore } from "@/context/AuthStore";
 
 export function SignIn() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
+  const { setUser } = useAuthStore();
 
   const form = useForm<z.infer<typeof LoginInFormSchema>>({
     resolver: zodResolver(LoginInFormSchema),
@@ -48,6 +50,21 @@ export function SignIn() {
   function onSubmitForm(user: z.infer<typeof LoginInFormSchema>) {
     SignInUser(user, {
       onSuccess: (data) => {
+        if (data.currentUser) {
+          const currentUser = data.currentUser;
+          setUser({
+            _id: currentUser._id,
+            firstName: currentUser.firstName,
+            lastName: currentUser.lastName,
+            userName: currentUser.userName,
+            avatar: currentUser.avatar,
+            email: currentUser.email,
+            bio: currentUser.bio,
+            friends: currentUser.friends,
+            incomingFriendRequests: currentUser.incomingFriendRequests,
+            sentFriendRequests: currentUser.sentFriendRequests,
+          });
+        }
         toast.success(data.message);
         router.push("/dashboard");
       },

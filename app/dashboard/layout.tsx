@@ -5,19 +5,17 @@ import FriendRequestSidebarOptions from "@/components/sidebar/FriendRequestSideb
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/context/AuthStore";
 import {
-  useCurrentUserData,
   useFriendsOfUser,
-  useSignOutUser,
+  useSignOutUser
 } from "@/lib/react-queries/queries";
 import { cn } from "@/lib/utils";
 import DeckLogo from "@/public/deck.svg";
 import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { CircleFadingPlusIcon } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 export default function DashboardLayout({
   children,
@@ -25,15 +23,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { mutate: signOut } = useSignOutUser();
-  const { user, setUser } = useAuthStore();
+  const { user } = useAuthStore();
 
   const [open, setOpen] = useState(false);
-
-  const {
-    data: currentUser,
-    error: currentUserError,
-    isLoading: currentUserIsLoading,
-  } = useCurrentUserData();
 
   const {
     data,
@@ -43,16 +35,7 @@ export default function DashboardLayout({
 
   const friendsOfUser = data?.friends;
 
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (currentUser) {
-      setUser(currentUser);
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    }
-  }, [currentUser, setUser, queryClient]);
-
-  if (currentUserError || fetchFreindError) {
+  if (fetchFreindError) {
     return notFound();
   }
 
@@ -118,11 +101,11 @@ export default function DashboardLayout({
               ))}
             </div>
           </div>
-          {user && !currentUserIsLoading ? (
+          {user ? (
             <div className="flex space-x-7 items-center">
               <Image
-                src={user?.avatar}
-                alt={user?.firstName}
+                src={user.avatar}
+                alt={user.firstName}
                 width={140}
                 height={140}
                 draggable={false}
@@ -131,10 +114,10 @@ export default function DashboardLayout({
               />
               <span className="flex flex-col">
                 <p className="text-md font-medium font-brand text-muted-foreground select-none text-nowrap ">
-                  {user?.firstName} {user?.lastName}
+                  {user.firstName} {user.lastName}
                 </p>
                 <p className="text-xs font-medium font-brand text-secondary-foreground select-none ">
-                  @{user?.userName}
+                  @{user.userName}
                 </p>
               </span>
             </div>

@@ -23,37 +23,34 @@ const FriendRequest: FC<FriendRequestProps> = ({
   onDecline,
 }) => {
   return (
-    <>
-      <Card className="w-60 p-4 border hover:border-indigo-600 duration-200 ease-in-out flex flex-col items-center gap-4">
-        <Avatar className="h-32 w-32 rounded-full">
-          <AvatarImage draggable={false} src={avatar} alt={_id} />
-          <AvatarFallback>{firstName.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <div className="space-y-1 flex flex-col items-center select-none">
-          <p className="text-lg font-semibold font-brand">
-            {firstName + " " + lastName}
-          </p>
-          <p className="text-xs text-muted-foreground">{email}</p>
-        </div>
-        <div className="space-x-4 flex w-full font-medium">
-          <Button
-            variant="default"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
-            onClick={() => onAccept(_id)}
-          >
-            Accept
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onDecline(_id)}
-            className="w-full"
-          >
-            Ignore
-          </Button>
-        </div>
-      </Card>
-      {/* </Card> */}
-    </>
+    <Card className="w-60 p-4 border hover:border-indigo-600 duration-200 ease-in-out flex flex-col items-center gap-4">
+      <Avatar className="h-32 w-32 rounded-full">
+        <AvatarImage draggable={false} src={avatar} alt={_id} />
+        <AvatarFallback>{firstName.charAt(0)}</AvatarFallback>
+      </Avatar>
+      <div className="space-y-1 flex flex-col items-center select-none">
+        <p className="text-lg font-semibold font-brand">
+          {firstName + " " + lastName}
+        </p>
+        <p className="text-xs text-muted-foreground">{email}</p>
+      </div>
+      <div className="space-x-4 flex w-full font-medium">
+        <Button
+          variant="default"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+          onClick={() => onAccept(_id)}
+        >
+          Accept
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => onDecline(_id)}
+          className="w-full"
+        >
+          Ignore
+        </Button>
+      </div>
+    </Card>
   );
 };
 

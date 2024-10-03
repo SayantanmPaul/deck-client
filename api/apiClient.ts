@@ -3,20 +3,22 @@ import axios from "axios";
 
 const isDevMode = false;
 
-const productionUrl = "https://deck-server-production.up.railway.app/api/";
-
 const BASE_URL = "http://localhost:5001/api/";
 
+const PRODUCTION_URL = "https://deck-server-production.up.railway.app/api";
+
 export const axiosCLient = axios.create({
-  baseURL: isDevMode ? BASE_URL : productionUrl,
+  baseURL: isDevMode ? BASE_URL : PRODUCTION_URL,
   withCredentials: true,
 });
 
+//response interceptor to handle token refresh and retry logic
 axiosCLient.interceptors.response.use(
   (response) => {
     return response;
   },
   async (error) => {
+    console.log(error);
     const originalRequest = error.config;
     if (error.response) {
       if (error.response.status === 403 && !originalRequest._retry) {
@@ -28,11 +30,10 @@ axiosCLient.interceptors.response.use(
           await axiosCLient.post("/user/refresh");
           return axiosCLient(originalRequest);
         } catch (refreshTokneError) {
-          window.location.href = "/signin";
+          // window.location.href = "/signin";
           return Promise.reject(refreshTokneError);
         }
       }
-
       return Promise.reject(error);
     }
   }
