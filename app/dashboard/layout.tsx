@@ -10,7 +10,6 @@ import DeckLogo from "@/public/deck.svg";
 import {
   IconArrowLeft,
   IconLogout,
-  IconLogout2,
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
