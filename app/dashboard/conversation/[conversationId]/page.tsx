@@ -50,12 +50,12 @@ const ConversationPage: FC<ConversationPageProps> = ({ params }) => {
             <div className="relative w-10 h-10">
               {partnerDetails?.avatar ? (
                 <Image
-                  fill
                   draggable={false}
-                  referrerPolicy="no-referrer"
                   className="rounded-full"
                   src={partnerDetails.avatar}
                   alt={partnerDetails._id}
+                  width={40}
+                  height={40}
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-neutral-800 animate-pulse"></div>

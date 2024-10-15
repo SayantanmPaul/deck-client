@@ -93,12 +93,12 @@ const Messages: FC<MessagesProps> = ({ initialMessages, currentUserId, partner, 
                 })}
               >
                 <Image
-                  fill
                   src={!isCurrentUser ? partner?.avatar : user?.avatar}
                   alt="profile picture"
                   className="rounded-full"
-                  referrerPolicy="no-referrer"
                   draggable={false}
+                  width={40}
+                  height={40}
                 />
               </div>
             </div>

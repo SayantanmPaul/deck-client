@@ -1,30 +1,13 @@
 "use client";
 
-import { useAuthStore } from "@/context/AuthStore";
-import { useSignOutUser } from "@/lib/react-queries/queries";
-import { permanentRedirect } from "next/navigation";
+import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 
 const DashboardPage = () => {
-  const { isAuthenticated } = useAuthStore();
-  const { mutate: signOut } = useSignOutUser();
-
-  if (!isAuthenticated) {
-    permanentRedirect("/signin");
-  }
-  
-  const handleUserLogout = () => {
-    signOut();
-  };
   return (
-    <main className="w-full h-dvh">
-      <section className="lg:w-96 md:w-1/2 h-auto p-4 flex flex-col justify-between">
-        <button
-          className="hover:underline text-sm text-rose-500"
-          onClick={handleUserLogout}
-        >
-          Logout
-        </button>
-      </section>
+    <main className="w-full h-dvh flex flex-col justify-center items-center">
+      <div className="w-2/3 h-min ">
+        <TextHoverEffect automatic duration={0.8} text="Deck" />
+      </div>
     </main>
   );
 };

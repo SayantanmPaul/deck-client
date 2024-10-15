@@ -25,13 +25,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosedIcon } from "@radix-ui/react-icons";
 import { AxiosError } from "axios";
 import { EyeIcon, LoaderCircleIcon } from "lucide-react";
-import { permanentRedirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 export function SignIn() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const { setUser } = useAuthStore();
 
@@ -64,8 +65,8 @@ export function SignIn() {
           });
         }
         toast.success(data.message);
-        permanentRedirect('/dashboard')
-        // router.push("/dashboard");
+        // permanentRedirect('/dashboard')
+        router.push("/dashboard");
       },
       onError: (error) => {
         const axiosError = error as AxiosError<ErrorResponse>;

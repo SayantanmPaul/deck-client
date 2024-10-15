@@ -96,7 +96,7 @@ const ConversationListSidebarOptions: FC<
       pusherClient.unbind("new_message", handleNewConversation);
       pusherClient.unbind("new_friend", handleFriendsUpdate);
     };
-  }, [currentUserId, pathname, router, addUnseenMessage, friends]);
+  }, [currentUserId, pathname, router, addUnseenMessage, friends, queryClient]);
 
   //removal unseen messages while the user in conversation with the friend
   useEffect(() => {

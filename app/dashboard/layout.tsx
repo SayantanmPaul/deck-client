@@ -4,13 +4,16 @@ import ConversationListSidebarOptions from "@/components/sidebar/ConversationLis
 import FriendRequestSidebarOptions from "@/components/sidebar/FriendRequestSidebarOptions";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/context/AuthStore";
-import {
-  useFriendsOfUser,
-  useSignOutUser
-} from "@/lib/react-queries/queries";
+import { useFriendsOfUser, useSignOutUser } from "@/lib/react-queries/queries";
 import { cn } from "@/lib/utils";
 import DeckLogo from "@/public/deck.svg";
-import { IconArrowLeft, IconSettings, IconUserBolt } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconLogout,
+  IconLogout2,
+  IconSettings,
+  IconUserBolt,
+} from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { CircleFadingPlusIcon } from "lucide-react";
 import Image from "next/image";
@@ -101,7 +104,7 @@ export default function DashboardLayout({
               ))}
             </div>
           </div>
-          {user ? (
+          {user && user.avatar ? (
             <div className="flex space-x-7 items-center">
               <Image
                 src={user.avatar}
@@ -146,6 +149,7 @@ export default function DashboardLayout({
           <div className="flex flex-col">
             <AddNewFriendSidebarOptions />
             <FriendRequestSidebarOptions />
+            <LogoutOptions />
           </div>
         </section>
         {children}
@@ -154,6 +158,21 @@ export default function DashboardLayout({
   );
 }
 
+const LogoutOptions = () => {
+  const { mutate: signOut } = useSignOutUser();
+
+  return (
+    <button
+      onClick={() => signOut()}
+      className="text-neutral-300 hover:text-indigo-600 hover:bg-neutral-900 group flex items-center gap-x-3 p-2 rounded-md text-xs font-semibold"
+    >
+      <div className="text-white group-hover:text-indigo-600 flex w-8 h-8 shrink-0 items-center justify-center rounded-lg border text-xs font-medium bg-neutral-800">
+        <IconLogout className="h-4 w-4" />
+      </div>
+      <p className="truncate">Logout</p>
+    </button>
+  );
+};
 const Logo = () => {
   return (
     <span className="flex gap-3 select-none items-center">
