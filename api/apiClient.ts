@@ -1,7 +1,7 @@
 import { INewUser, IUser } from "@/lib/types";
 import axios from "axios";
 
-const isDevMode = true;
+const isDevMode = false;
 
 const BASE_URL = "http://localhost:5001/api/";
 
