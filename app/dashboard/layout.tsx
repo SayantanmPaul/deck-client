@@ -8,10 +8,9 @@ import { useFriendsOfUser, useSignOutUser } from "@/lib/react-queries/queries";
 import { cn } from "@/lib/utils";
 import DeckLogo from "@/public/deck.svg";
 import {
-  IconArrowLeft,
   IconLogout,
   IconSettings,
-  IconUserBolt,
+  IconUserBolt
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { CircleFadingPlusIcon } from "lucide-react";
@@ -24,7 +23,6 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { mutate: signOut } = useSignOutUser();
   const { user } = useAuthStore();
 
   const [open, setOpen] = useState(false);
@@ -52,9 +50,19 @@ export default function DashboardLayout({
         />
       ),
     },
+    // {
+    //   label: "deck meetings",
+    //   href: "/dashboard/friends/add",
+    //   icon: (
+    //     <IconDeviceComputerCamera
+    //       size={22}
+    //       className="text-neutral-700 dark:text-neutral-200 flex-shrink-0"
+    //     />
+    //   ),
+    // },
     {
       label: "friends",
-      href: "#",
+      href: "/dashboard/friends/add",
       icon: (
         <IconUserBolt
           size={22}
@@ -63,20 +71,10 @@ export default function DashboardLayout({
       ),
     },
     {
-      label: "settings",
+      label: "profile",
       href: "#",
       icon: (
         <IconSettings
-          size={22}
-          className="text-neutral-700 dark:text-neutral-200 flex-shrink-0"
-        />
-      ),
-    },
-    {
-      label: "logout",
-      onClick: () => signOut(),
-      icon: (
-        <IconArrowLeft
           size={22}
           className="text-neutral-700 dark:text-neutral-200 flex-shrink-0"
         />
@@ -99,7 +97,7 @@ export default function DashboardLayout({
             </>
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} onClick={link.onClick} />
+                <SidebarLink key={idx} link={link}/>
               ))}
             </div>
           </div>
