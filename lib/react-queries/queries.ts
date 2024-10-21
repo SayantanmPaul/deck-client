@@ -136,10 +136,11 @@ export const useConversationPartnerDetails = (partnerId: string) => {
 
 export const useSendMessage = () => {
   return useMutation({
-    mutationFn: (data: { conversationId: string; text: string }) => {
+    mutationFn: (data: { conversationId: string; text: string, file?: File | null }) => {
       return sendMessage({
         conversationId: data.conversationId,
         textMessage: data.text,
+        file: data.file
       });
     },
   });

@@ -144,9 +144,25 @@ export const getConversationPartner = async ({
 export const sendMessage = async (data: {
   conversationId: string;
   textMessage: string;
+  file?: File | null;
 }) => {
   try {
-    const response = await axiosCLient.post("/user/conversation/send", data);
+    const formData = new FormData();
+    formData.append("conversationId", data.conversationId);
+    formData.append("textMessage", data.textMessage);
+
+    if (data.file) {
+      formData.append("file", data.file);
+    }
+    const response = await axiosCLient.post(
+      "/user/conversation/send",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     throw error;

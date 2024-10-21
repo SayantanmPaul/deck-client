@@ -5,6 +5,9 @@ export const MessageSchema = z.object({
   senderId: z.string(),
   text: z.string(),
   timeStamp: z.number(),
+  contentUrl: z.string().nullable(),
+  contentType: z.string().nullable(),
+  contentFileName: z.string().nullable(),
 });
 
 export const MessageArraySchema = z.array(MessageSchema);

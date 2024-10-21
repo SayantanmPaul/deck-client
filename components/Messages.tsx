@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useAuthStore } from "@/context/AuthStore";
 import { ConversationPartnerType } from "@/lib/types";
 import { pusherClient } from "@/lib/pusher";
+import DynamicMediaComp from "./DynamicMedia";
 
 interface MessagesProps {
   initialMessages: Message[];
@@ -15,7 +16,12 @@ interface MessagesProps {
   conversationId: string;
 }
 
-const Messages: FC<MessagesProps> = ({ initialMessages, currentUserId, partner, conversationId }) => {
+const Messages: FC<MessagesProps> = ({
+  initialMessages,
+  currentUserId,
+  partner,
+  conversationId,
+}) => {
   const { user } = useAuthStore();
   const [messages, setMessages] = useState<Message[]>(initialMessages);
 
@@ -68,7 +74,7 @@ const Messages: FC<MessagesProps> = ({ initialMessages, currentUserId, partner, 
               >
                 <span
                   className={cn(
-                    "px-3 py-2 rounded-2xl inline-block font-medium max-w-sm lg:max-w-full text-pretty text-clip overflow-clip",
+                    "p-2 rounded-2xl inline-block font-medium max-w-sm lg:max-w-xl text-pretty text-clip overflow-clip",
                     {
                       "bg-neutral-700 text-neutral-100": isCurrentUser,
                       "bg-neutral-600 text-gray-50": !isCurrentUser,
@@ -79,10 +85,19 @@ const Messages: FC<MessagesProps> = ({ initialMessages, currentUserId, partner, 
                     }
                   )}
                 >
-                  {mes.text}{" "}
-                  <span className="ml-4 text-xs text-muted-foreground w-full">
-                    {moment(mes.timeStamp).format("LT")}
-                  </span>
+                  {mes.contentUrl && mes.contentType && mes.contentFileName && (
+                    <DynamicMediaComp
+                      contentURl={mes.contentUrl}
+                      type={mes.contentType}
+                      fileName={mes.contentFileName}
+                    />
+                  )}
+                  <div className="flex justify-between items-end ">
+                    <p className="ml-1">{mes.text}</p>
+                    <span className="ml-4 text-xs text-muted-foreground w-fit text-nowrap">
+                      {moment(mes.timeStamp).format("LT")}
+                    </span>
+                  </div>
                 </span>
               </div>
               <div

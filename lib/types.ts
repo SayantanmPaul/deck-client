@@ -46,6 +46,8 @@ export interface MessageType {
   receiverId: string;
   text: string;
   timeStamp: string;
+  contentUrl?: string;
+  contentType?: string;
 }
 
 export interface ConversationPartnerType {
