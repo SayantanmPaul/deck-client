@@ -8,7 +8,7 @@ import {
   IconLoader2,
   IconSend2,
   IconVideo,
-  IconX
+  IconX,
 } from "@tabler/icons-react";
 import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 import { SmileIcon } from "lucide-react";
@@ -173,7 +173,10 @@ const FilePreview = ({
         ) : fileType?.includes("video") ? (
           <div className="w-full flex items-center gap-2 p-3 pr-10 bg-neutral-600 shadow-lg rounded-lg group">
             <IconVideo size={20} />
-            <a className="text-sm group-hover:text-indigo-400">{fileName}</a>
+            <div className="flex flex-col gap-1">
+              <a className="text-sm">{fileName}</a>
+              <p className="text-[10px] font-semibold">* videos can take more time to send</p>
+            </div>
           </div>
         ) : fileType?.includes("audio") ? (
           <div className="w-full">

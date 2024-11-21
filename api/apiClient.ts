@@ -5,7 +5,7 @@ const isDevMode = false;
 
 const BASE_URL = "http://localhost:5001/api/";
 
-const PRODUCTION_URL = "https://deck-server-production.up.railway.app/api";
+const PRODUCTION_URL = "https://deck-server.vercel.app/api";
 
 export const axiosCLient = axios.create({
   baseURL: isDevMode ? BASE_URL : PRODUCTION_URL,
